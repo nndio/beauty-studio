@@ -171,3 +171,70 @@
   color: #766e69;
   font-size: 0.85rem;
 }
+
+/* Responsive design */
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav {
+    gap: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 9vw, 4.5rem);
+  }
+}
+
+@media (max-width: 650px) {
+  .container {
+    width: min(100% - 30px, 1120px);
+  }
+
+  .header .container {
+    min-height: 65px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .header-button {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+  }
+
+  .hero {
+    min-height: calc(100vh - 65px);
+
+    background:
+      linear-gradient(
+        90deg,
+        rgba(255, 250, 248, 0.95),
+        rgba(255, 250, 248, 0.75)
+      ),
+      url("/images/hero.jpg") center / cover no-repeat;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 14vw, 4rem);
+    letter-spacing: -2px;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .services {
+    padding: 80px 0;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card {
+    padding: 25px;
+  }
+}
