@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { services } from "../data/services";
 
 interface FormData {
   name: string;
@@ -76,6 +77,10 @@ const BookingForm = () => {
 
     return newErrors;
   };
+
+    const selectedService = services.find(
+        (service) => service.name === formData.service
+    );
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -210,16 +215,24 @@ const BookingForm = () => {
               onChange={handleChange}
             >
               <option value="">Select a service</option>
-              <option value="Hair Styling">Hair Styling</option>
-              <option value="Manicure">Manicure</option>
-              <option value="Makeup">Makeup</option>
-              <option value="Facial">Facial</option>
+              {services.map((service) => (
+                <option key={service.id} value={service.name}>
+                    {service.name}
+                </option>
+                ))}
             </select>
 
             {errors.service && (
               <span className="error-message">
                 {errors.service}
               </span>
+            )}
+
+            {selectedService && (
+                <div className="selected-service-info">
+                <span>Price: €{selectedService.price}</span>
+                <span>Duration: {selectedService.duration} min</span>
+                </div>
             )}
           </div>
 

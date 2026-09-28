@@ -1,32 +1,32 @@
 const images = [
   {
     id: 1,
-    src: "/images/gallery-1.jpg",
+    src: "/images/img1.jpg",
     alt: "Beauty treatment",
   },
   {
     id: 2,
-    src: "/images/gallery-2.jpg",
+    src: "/images/img2.jpg",
     alt: "Hair styling",
   },
   {
     id: 3,
-    src: "/images/gallery-3.jpg",
+    src: "/images/img3.jpg",
     alt: "Manicure",
   },
   {
     id: 4,
-    src: "/images/gallery-4.jpg",
+    src: "/images/img4.jpg",
     alt: "Beauty products",
   },
   {
     id: 5,
-    src: "/images/gallery-5.jpg",
+    src: "/images/img5.jpg",
     alt: "Makeup",
   },
   {
     id: 6,
-    src: "/images/gallery-6.jpg",
+    src: "/images/img6.jpg",
     alt: "Beauty studio",
   },
 ];
