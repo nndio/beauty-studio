@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { services } from "../data/services";
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  service: string;
-  date: string;
-  message: string;
-}
+import { createBooking } from "../api/bookingApi";
+import type { BookingFormData } from "../types";
 
 interface FormErrors {
   name?: string;
@@ -19,7 +12,7 @@ interface FormErrors {
 }
 
 const BookingForm = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<BookingFormData>({
     name: "",
     email: "",
     phone: "",
@@ -29,8 +22,15 @@ const BookingForm = () => {
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const getToday = () => {
+    const today = new Date();
+
+    return today.toISOString().split("T")[0];
+  };
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -48,6 +48,8 @@ const BookingForm = () => {
       ...previousErrors,
       [name]: "",
     }));
+
+    setSubmitError("");
   };
 
   const validateForm = (): FormErrors => {
@@ -72,25 +74,21 @@ const BookingForm = () => {
     }
 
     if (!formData.date) {
-        newErrors.date = "Please select a date.";
+      newErrors.date = "Please select a date.";
     } else if (formData.date < getToday()) {
-        newErrors.date = "Please select today or a future date.";
+      newErrors.date = "Please select today or a future date.";
     }
 
     return newErrors;
   };
 
-    const selectedService = services.find(
-        (service) => service.name === formData.service
-    );
+  const selectedService = services.find(
+    (service) => service.name === formData.service
+  );
 
-    const getToday = () => {
-    const today = new Date();
-
-    return today.toISOString().split("T")[0];
-    };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     const validationErrors = validateForm();
@@ -100,20 +98,35 @@ const BookingForm = () => {
       return;
     }
 
-    console.log("Booking data:", formData);
+    setIsLoading(true);
+    setSubmitError("");
 
-    setIsSubmitted(true);
+    try {
+      const response = await createBooking(formData);
 
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      service: "",
-      date: "",
-      message: "",
-    });
+      console.log("API response:", response);
 
-    setErrors({});
+      setIsSubmitted(true);
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        date: "",
+        message: "",
+      });
+
+      setErrors({});
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -163,7 +176,6 @@ const BookingForm = () => {
               id="name"
               name="name"
               type="text"
-              min={getToday()}
               value={formData.name}
               onChange={handleChange}
               placeholder="Your name"
@@ -224,11 +236,15 @@ const BookingForm = () => {
               onChange={handleChange}
             >
               <option value="">Select a service</option>
+
               {services.map((service) => (
-                <option key={service.id} value={service.name}>
-                    {service.name}
+                <option
+                  key={service.id}
+                  value={service.name}
+                >
+                  {service.name}
                 </option>
-                ))}
+              ))}
             </select>
 
             {errors.service && (
@@ -238,10 +254,15 @@ const BookingForm = () => {
             )}
 
             {selectedService && (
-                <div className="selected-service-info">
-                <span>Price: €{selectedService.price}</span>
-                <span>Duration: {selectedService.duration} min</span>
-                </div>
+              <div className="selected-service-info">
+                <span>
+                  Price: €{selectedService.price}
+                </span>
+
+                <span>
+                  Duration: {selectedService.duration} min
+                </span>
+              </div>
             )}
           </div>
 
@@ -252,6 +273,7 @@ const BookingForm = () => {
               id="date"
               name="date"
               type="date"
+              min={getToday()}
               value={formData.date}
               onChange={handleChange}
             />
@@ -276,8 +298,20 @@ const BookingForm = () => {
             />
           </div>
 
-          <button type="submit" className="primary-button">
-            Request Appointment
+          {submitError && (
+            <p className="submit-error">
+              {submitError}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="primary-button"
+            disabled={isLoading}
+          >
+            {isLoading
+              ? "Sending..."
+              : "Request Appointment"}
           </button>
         </form>
       </div>
