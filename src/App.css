@@ -451,6 +451,22 @@
   }
 }
 
+.selected-service-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 15px;
+  background: #f5eeea;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #766e69;
+}
+
+.selected-service-info span:first-child {
+  font-weight: 600;
+  color: #2d2926;
+}
+
 @media (max-width: 800px) {
   .about-content {
     grid-template-columns: 1fr;

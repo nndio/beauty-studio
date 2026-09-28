@@ -72,7 +72,9 @@ const BookingForm = () => {
     }
 
     if (!formData.date) {
-      newErrors.date = "Please select a date.";
+        newErrors.date = "Please select a date.";
+    } else if (formData.date < getToday()) {
+        newErrors.date = "Please select today or a future date.";
     }
 
     return newErrors;
@@ -81,6 +83,12 @@ const BookingForm = () => {
     const selectedService = services.find(
         (service) => service.name === formData.service
     );
+
+    const getToday = () => {
+    const today = new Date();
+
+    return today.toISOString().split("T")[0];
+    };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -155,6 +163,7 @@ const BookingForm = () => {
               id="name"
               name="name"
               type="text"
+              min={getToday()}
               value={formData.name}
               onChange={handleChange}
               placeholder="Your name"
