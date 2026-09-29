@@ -6,7 +6,7 @@ The project includes a client-facing booking form and a simple admin panel for m
 
 ## 🌐 Live Demo
 
-[View Live Demo](beauty-studio-pgpxa5rlz-vahnovan.vercel.app)
+[View Live Demo](https://beauty-studio-vahnovan.vercel.app)
 
 ## 📸 Preview
 
