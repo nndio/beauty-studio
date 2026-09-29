@@ -53,3 +53,31 @@ export const getBookings = async (): Promise<Booking[]> => {
 
   return getStoredBookings();
 };
+
+export const updateBookingStatus = async (
+  id: number,
+  status: Booking["status"]
+): Promise<Booking> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const bookings = getStoredBookings();
+
+  const bookingIndex = bookings.findIndex(
+    (booking) => booking.id === id
+  );
+
+  if (bookingIndex === -1) {
+    throw new Error("Booking not found.");
+  }
+
+  const updatedBooking = {
+    ...bookings[bookingIndex],
+    status,
+  };
+
+  bookings[bookingIndex] = updatedBooking;
+
+  saveBookings(bookings);
+
+  return updatedBooking;
+};

@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
-import { getBookings } from "../api/bookingApi";
+import {
+  getBookings,
+  updateBookingStatus,
+} from "../api/bookingApi";
 import type { Booking } from "../types";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const loadBookings = async () => {
       try {
         const data = await getBookings();
+
         setBookings(data);
       } finally {
         setIsLoading(false);
@@ -18,6 +25,30 @@ const Bookings = () => {
 
     loadBookings();
   }, []);
+
+  const handleStatusChange = async (
+    id: number,
+    status: Booking["status"]
+  ) => {
+    setUpdatingId(id);
+
+    try {
+      const updatedBooking = await updateBookingStatus(
+        id,
+        status
+      );
+
+      setBookings((previousBookings) =>
+        previousBookings.map((booking) =>
+          booking.id === id ? updatedBooking : booking
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update booking:", error);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   if (isLoading) {
     return <p>Loading bookings...</p>;
@@ -34,7 +65,10 @@ const Bookings = () => {
 
         <div className="bookings-list">
           {bookings.map((booking) => (
-            <article className="booking-card" key={booking.id}>
+            <article
+              className="booking-card"
+              key={booking.id}
+            >
               <h3>{booking.name}</h3>
 
               <p>
@@ -52,9 +86,51 @@ const Bookings = () => {
                 {booking.email}
               </p>
 
-              <span className="booking-status">
+              <p>
+                <strong>Phone:</strong>{" "}
+                {booking.phone}
+              </p>
+
+              {booking.message && (
+                <p>
+                  <strong>Message:</strong>{" "}
+                  {booking.message}
+                </p>
+              )}
+
+              <span
+                className={`booking-status booking-status-${booking.status}`}
+              >
                 {booking.status}
               </span>
+
+              <div className="booking-actions">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleStatusChange(
+                      booking.id,
+                      "confirmed"
+                    )
+                  }
+                  disabled={updatingId === booking.id}
+                >
+                  Confirm
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleStatusChange(
+                      booking.id,
+                      "cancelled"
+                    )
+                  }
+                  disabled={updatingId === booking.id}
+                >
+                  Cancel
+                </button>
+              </div>
             </article>
           ))}
         </div>
