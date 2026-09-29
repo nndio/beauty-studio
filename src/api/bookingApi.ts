@@ -81,3 +81,25 @@ export const updateBookingStatus = async (
 
   return updatedBooking;
 };
+
+export const deleteBooking = async (
+  id: number
+): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const bookings = getStoredBookings();
+
+  const bookingExists = bookings.some(
+    (booking) => booking.id === id
+  );
+
+  if (!bookingExists) {
+    throw new Error("Booking not found.");
+  }
+
+  const updatedBookings = bookings.filter(
+    (booking) => booking.id !== id
+  );
+
+  saveBookings(updatedBookings);
+};

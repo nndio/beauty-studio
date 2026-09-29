@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./App.css";
 
 import Header from "./components/Header";
@@ -10,6 +11,12 @@ import BookingForm from "./components/BookingForm";
 import Bookings from "./components/Bookings";
 
 function App() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleBookingCreated = () => {
+      setRefreshKey((previousKey) => previousKey + 1);
+    };
+
   return (
     <>
       <Header />
@@ -20,8 +27,10 @@ function App() {
         <About />
         <Gallery />
         <Reviews />
-        <BookingForm />
-        <Bookings />
+        <BookingForm
+          onBookingCreated={handleBookingCreated}
+        />
+        <Bookings refreshKey={refreshKey} />
       </main>
     </>
   );

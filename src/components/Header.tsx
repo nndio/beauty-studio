@@ -10,7 +10,6 @@ const Header = () => {
           <a href="#services">Services</a>
           <a href="#about">About</a>
           <a href="#gallery">Gallery</a>
-          <a href="#contact">Contact</a>
         </nav>
 
         <a href="#booking" className="header-button">

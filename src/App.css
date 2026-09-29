@@ -580,3 +580,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.booking-actions .delete-button {
+  background: #c0392b;
+  color: white;
+}
+
+.booking-actions .delete-button:hover {
+  opacity: 0.85;
+}

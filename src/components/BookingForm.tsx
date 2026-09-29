@@ -11,7 +11,13 @@ interface FormErrors {
   date?: string;
 }
 
-const BookingForm = () => {
+interface BookingFormProps {
+  onBookingCreated: () => void;
+}
+
+  const BookingForm = ({
+    onBookingCreated,
+  }: BookingFormProps) => {
   const [formData, setFormData] = useState<BookingFormData>({
     name: "",
     email: "",
@@ -106,6 +112,7 @@ const BookingForm = () => {
 
       console.log("API response:", response);
 
+      onBookingCreated();
       setIsSubmitted(true);
 
       setFormData({
