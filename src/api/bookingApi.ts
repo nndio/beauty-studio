@@ -1,17 +1,55 @@
-import type { BookingFormData } from "../types";
+import type { Booking, BookingFormData } from "../types";
 
-export const createBooking = async (booking: BookingFormData) => {
+const STORAGE_KEY = "beauty-studio-bookings";
+
+const getStoredBookings = (): Booking[] => {
+  const storedBookings = localStorage.getItem(STORAGE_KEY);
+
+  if (!storedBookings) {
+    return [];
+  }
+
+  return JSON.parse(storedBookings);
+};
+
+const saveBookings = (bookings: Booking[]) => {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(bookings)
+  );
+};
+
+export const createBooking = async (
+  bookingData: BookingFormData
+): Promise<Booking> => {
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
   const success = Math.random() > 0.2;
 
   if (!success) {
-    throw new Error("Something went wrong. Please try again.");
+    throw new Error(
+      "Something went wrong. Please try again."
+    );
   }
 
-  return {
-    success: true,
-    message: "Your appointment request has been received.",
-    booking,
+  const bookings = getStoredBookings();
+
+  const newBooking: Booking = {
+    ...bookingData,
+    id: Date.now(),
+    createdAt: new Date().toISOString(),
+    status: "pending",
   };
+
+  const updatedBookings = [...bookings, newBooking];
+
+  saveBookings(updatedBookings);
+
+  return newBooking;
+};
+
+export const getBookings = async (): Promise<Booking[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return getStoredBookings();
 };

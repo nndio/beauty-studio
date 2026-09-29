@@ -14,3 +14,9 @@ export interface BookingFormData {
   date: string;
   message: string;
 }
+
+export interface Booking extends BookingFormData {
+  id: number;
+  createdAt: string;
+  status: "pending" | "confirmed" | "cancelled";
+}
