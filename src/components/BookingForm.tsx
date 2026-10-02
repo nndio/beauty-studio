@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { services } from "../data/services";
 import { createBooking } from "../api/bookingApi";
-import type { BookingFormData } from "../types";
+
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../app/hooks";
+import {
+  updateBooking,
+  resetBooking,
+} from "../features/booking/bookingSlice";
 
 interface FormErrors {
   name?: string;
@@ -18,14 +26,11 @@ interface BookingFormProps {
   const BookingForm = ({
     onBookingCreated,
   }: BookingFormProps) => {
-  const [formData, setFormData] = useState<BookingFormData>({
-    name: "",
-    email: "",
-    phone: "",
-    service: "",
-    date: "",
-    message: "",
-  });
+  const dispatch = useAppDispatch();
+
+  const formData = useAppSelector(
+    (state) => state.booking
+  );
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -45,10 +50,11 @@ interface BookingFormProps {
   ) => {
     const { name, value } = event.target;
 
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }));
+    dispatch(
+      updateBooking({
+        [name]: value,
+      })
+    );
 
     setErrors((previousErrors) => ({
       ...previousErrors,
@@ -115,14 +121,7 @@ interface BookingFormProps {
       onBookingCreated();
       setIsSubmitted(true);
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        service: "",
-        date: "",
-        message: "",
-      });
+      dispatch(resetBooking());
 
       setErrors({});
     } catch (error) {
