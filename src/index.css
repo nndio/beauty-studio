@@ -55,3 +55,22 @@ textarea {
 .section-heading p:last-child {
   color: #766e69;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.favorites-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.favorites-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
