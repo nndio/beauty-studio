@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import bookingReducer from "../features/booking/bookingSlice";
+import favoritesReducer from "../features/favorites/favoritesSlice";
 
 export const store = configureStore({
   reducer: {
     booking: bookingReducer,
+    favorites: favoritesReducer,
   },
 });
 
