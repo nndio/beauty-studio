@@ -9,6 +9,7 @@ import {
 import {
   updateBooking,
   resetBooking,
+  addBooking,
 } from "../features/booking/bookingSlice";
 
 interface FormErrors {
@@ -19,13 +20,7 @@ interface FormErrors {
   date?: string;
 }
 
-interface BookingFormProps {
-  onBookingCreated: () => void;
-}
-
-  const BookingForm = ({
-    onBookingCreated,
-  }: BookingFormProps) => {
+  const BookingForm = () => {
   const dispatch = useAppDispatch();
 
   const formData = useAppSelector(
@@ -116,9 +111,8 @@ interface BookingFormProps {
     try {
       const response = await createBooking(formData);
 
-      console.log("API response:", response);
+      dispatch(addBooking(response));
 
-      onBookingCreated();
       setIsSubmitted(true);
 
       dispatch(resetBooking());

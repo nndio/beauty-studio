@@ -1,27 +1,45 @@
 import { useEffect, useState } from "react";
+
 import {
   getBookings,
   updateBookingStatus,
   deleteBooking,
 } from "../api/bookingApi";
+
 import type { Booking } from "../types";
 
-interface BookingsProps {
-  refreshKey: number;
-}
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../app/hooks";
 
-const Bookings = ({ refreshKey }: BookingsProps) => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+import {
+  setBookings,
+  updateBookingStatusInStore,
+  removeBooking,
+} from "../features/booking/bookingSlice";
+
+const Bookings = () => {
+  const dispatch = useAppDispatch();
+
+  const bookings = useAppSelector(
+    (state) => state.booking.bookings
+  );
+
   const [isLoading, setIsLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(
+    null
+  );
+  const [deletingId, setDeletingId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const loadBookings = async () => {
       try {
         const data = await getBookings();
 
-        setBookings(data);
+        dispatch(setBookings(data));
       } catch (error) {
         console.error("Failed to load bookings:", error);
       } finally {
@@ -30,7 +48,7 @@ const Bookings = ({ refreshKey }: BookingsProps) => {
     };
 
     loadBookings();
-  }, [refreshKey]);
+  }, [dispatch]);
 
   const handleStatusChange = async (
     id: number,
@@ -44,10 +62,11 @@ const Bookings = ({ refreshKey }: BookingsProps) => {
         status
       );
 
-      setBookings((previousBookings) =>
-        previousBookings.map((booking) =>
-          booking.id === id ? updatedBooking : booking
-        )
+      dispatch(
+        updateBookingStatusInStore({
+          id,
+          status: updatedBooking.status,
+        })
       );
     } catch (error) {
       console.error("Failed to update booking:", error);
@@ -70,11 +89,7 @@ const Bookings = ({ refreshKey }: BookingsProps) => {
     try {
       await deleteBooking(id);
 
-      setBookings((previousBookings) =>
-        previousBookings.filter(
-          (booking) => booking.id !== id
-        )
-      );
+      dispatch(removeBooking(id));
     } catch (error) {
       console.error("Failed to delete booking:", error);
     } finally {
@@ -108,7 +123,9 @@ const Bookings = ({ refreshKey }: BookingsProps) => {
       <div className="container">
         <div className="section-heading">
           <p className="subtitle">ADMIN PANEL</p>
+
           <h2>Bookings</h2>
+
           <p>Manage appointment requests.</p>
         </div>
 
